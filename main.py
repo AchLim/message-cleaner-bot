@@ -19,10 +19,12 @@ SLACK_OAUTH_REDIRECT_URI = os.getenv("SLACK_OAUTH_REDIRECT_URI")
 # Slash Command Route
 @app.post("/slack/delete-all")
 async def delete_all_messages(
-    user_token: str = Form(None),
+    text: str = Form(None),
     channel_id: str = Form(...),
     user_id: str = Form(...),
 ):
+    user_token = text.strip()  # Get the user token from the text input
+    
     if not user_token:
         # Send authorization URL if token is not provided
         auth_url = (
@@ -38,6 +40,12 @@ async def delete_all_messages(
                 "text": f"To authorize this app to delete your messages, click here:\n<{auth_url}|Authorize App>"
             },
         )
+
+    if not user_token.startswith("xoxp-"):
+        return JSONResponse(content={
+            "response_type": "ephemeral",
+            "text": "❌ Invalid or missing user token.\nPlease call the slash command like:\n`/delete-my-messages xoxp-...`"
+        })
 
     # Proceed to delete messages
     user_client = WebClient(token=user_token)

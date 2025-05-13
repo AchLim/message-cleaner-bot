@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import requests
 import time
 import os
+import asyncio
 
 load_dotenv()
 
@@ -60,7 +61,7 @@ async def delete_all_messages(
                 try:
                     user_client.chat_delete(channel=channel_id, ts=msg["ts"])
                     deleted += 1
-                    time.sleep(1)
+                    await asyncio.sleep(1)  # Non-blocking async delay to handle rate limit
                 except SlackApiError as e:
                     continue  # skip if not allowed to delete
 

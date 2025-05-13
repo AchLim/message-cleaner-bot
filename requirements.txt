@@ -3,3 +3,4 @@ uvicorn
 slack_sdk
 python-dotenv
 python-multipart
+requests

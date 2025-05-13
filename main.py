@@ -1,11 +1,15 @@
+from dotenv import load_dotenv
 from fastapi import FastAPI, Form
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
+
 import os
 import time
 
+load_dotenv()
+
 app = FastAPI()
-client = WebClient(token=os.environ["SLACK_BOT_TOKEN"])
+client = WebClient(token=os.environ.get('SLACK_BOT_TOKEN'))
 
 @app.post("/slack/delete-all")
 async def delete_all(
